@@ -6,3 +6,5 @@ class UserForm(forms.Form):
     password = forms.CharField(label='密码', widget=forms.PasswordInput())
     email = forms.EmailField(label='电子邮件')
 
+class LoginForm(forms.Form):
+    pass

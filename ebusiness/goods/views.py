@@ -1,6 +1,6 @@
 from django.shortcuts import render, render_to_response
 
-from goods.forms import UserForm
+from goods.forms import UserForm, LoginForm
 
 # Create your views here.
 # 用户注册
@@ -24,3 +24,13 @@ def register(request):
             else:
                 # 否则将表单写入数据库
                 user = User()
+                user.username = username
+                user.password = password
+                username.email = email
+                user.save()
+                # 返回登录页面
+                uf = LoginForm()
+                return render_to_response('index.html', {'uf':uf})
+    else:   # 如果不是表单提交状态, 就显示表单信息
+        uf = UserForm()
+    return render_to_response('register.html', {'uf':uf})
