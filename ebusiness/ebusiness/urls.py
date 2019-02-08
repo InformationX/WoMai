@@ -20,10 +20,13 @@ from django.contrib import admin
 from django.urls import path
 
 from ebusiness.settings import BASE_DIR
+from goods import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
     # 图片保存
-    path(r'^static/(?P<path>.*)', static.serve, {'document_root':os.path.join(BASE_DIR, 'upload')})
+    path(r'^static/(?P<path>.*)', static.serve, {'document_root':os.path.join(BASE_DIR, 'upload')}),
+    # 用户注册
+    path(r'^register/$', views.register)
 ]
