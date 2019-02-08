@@ -85,6 +85,45 @@ def user_info(request):
         address_list = Address.objects.filter(user_id=user_list.id)
         return render(request, 'view_user.html', {"user":username,"user_info":user_list, "address":address_list, "count":count})
 
+def chage_password(request):
+    '''
+    修改用户密码
+    :param request:
+    :return:
+    '''
+    util = Util()
+    username = util.check_user(request)
+    if username == "":
+        uf = LoginForm()
+        return render(request, "index.html", {'uf':uf, "error":"请登录后再进入"})
+    else:
+        count = util.cookies_count(request)
+    # 获得当前登录用户的用户信息
+    user_info = get_object_or_404(User, username=username)
+    # 如果是提交表单, 就获取表单信息, 并且进行表单信息验证
+    if request.method == 'POST':
+        # 获取旧密码
+        oldpassword = (request.POST.get("oldpassword", "")).strip()
+        # 获取新密码
+        newpassword = (request.POST.get("newpassword", "")).strip()
+        # 获取新密码的确认密码
+        checkpassword = (request.POST.get("checkpassword", "")).strip()
+        # 如果旧密码不正确, 就报错误信息, 不允许修改
+        if oldpassword != user_info.password:
+            return render(request, "change_password.html", {'user':username, 'error':'原密码不正确, 请确定后重新输入！', 'count':count})
+        # 如果旧密码与新密码相同,就报错误信息, 不允许修改
+        elif oldpassword == newpassword:
+            return render(request, "change_password.html", {'user':username, 'error':'新密码与旧密码相同,请重新输入！', 'count':count})
+        # 如果新密码与确认密码不同,报错
+        elif newpassword != checkpassword:
+            return render(request, 'change_password.html', {'user':username, 'error':'两次输入的密码不同！', 'count':count})
+        else:
+            # 否则修改成功
+            User.objects.filter(username=username).update(password=newpassword)
+            return render(request, "change_password.html", {'user':username, 'error':'密码修改成功！请牢记密码！', 'count':count})
+    else:
+        return render(request, "change_password.html", {'user':username, 'count':count})
+
 
 # 商品管理部分
 def goods_view(request):
@@ -112,3 +151,4 @@ def goods_view(request):
         except PageNotAnInteger:
             contacts = paginator.page(1)
         return render(request, "goods_view.html", {"user":username, "goodss":contacts, "count":count})
+

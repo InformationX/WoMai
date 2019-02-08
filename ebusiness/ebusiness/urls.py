@@ -35,6 +35,8 @@ urlpatterns = [
     url(r'^login_action/$', views.login_action),
     # 用户信息显示
     url(r'^user_info/$', views.user_info),
+    # 修改用户密码
+    url(r'^change_password/$', views.change_password),
     # 商品信息显示
     url(r'^goods_view/$', views.goods_view),
 
