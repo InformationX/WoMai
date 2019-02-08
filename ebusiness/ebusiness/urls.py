@@ -31,5 +31,7 @@ urlpatterns = [
     url(r'^register/$', views.register),
     # 主页
     url(r'^$', views.index),
+    url(r'^index/$', views.index),
+    url(r'^login_action/$', views.login_action)
 
 ]
