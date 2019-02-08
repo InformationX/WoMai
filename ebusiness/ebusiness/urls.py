@@ -15,7 +15,7 @@ Including another URLconf
 """
 import os
 
-from django.conf.urls import static
+from django.conf.urls import static, url
 from django.contrib import admin
 from django.urls import path
 
@@ -26,7 +26,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # 图片保存
-    path(r'^static/(?P<path>.*)', static.serve, {'document_root':os.path.join(BASE_DIR, 'upload')}),
+    url(r'^static/(?P<path>.*)', static.serve, {'document_root':os.path.join(BASE_DIR, 'upload')}),
     # 用户注册
-    path(r'^register/$', views.register)
+    url(r'^register/$', views.register)
 ]
