@@ -84,3 +84,31 @@ def user_info(request):
         # 获取登录用户收货地址的所有信息
         address_list = Address.objects.filter(user_id=user_list.id)
         return render(request, 'view_user.html', {"user":username,"user_info":user_list, "address":address_list, "count":count})
+
+
+# 商品管理部分
+def goods_view(request):
+    '''
+    查看商品信息
+    :param request:
+    :return:
+    '''
+    util = Util()
+    username = util.check_user(request)
+    if username == "":
+        uf = LoginForm()
+        return render(request, "index.html", {'uf':uf, "error":"请登录后再进入！"})
+    else:
+        # 获得所有商品信息
+        good_list = Goods.objects.all()
+        # 获得购物车物品数量
+        count = util.cookies_count(request)
+
+        # 翻页操作
+        paginator = Paginator(good_list, 5)
+        page = request.GET.get('page')
+        try:
+            contacts = paginator.page(page)
+        except PageNotAnInteger:
+            contacts = paginator.page(1)
+        return render(request, "goods_view.html", {"user":username, "goodss":contacts, "count":count})
