@@ -10,3 +10,13 @@ class User(models.Model):
 
     def __str__(self):
         return self.username
+
+# 商品
+class Goods(models.Model):
+    name = models.CharField(max_length=100)
+    price = models.FloatField()
+    picture = models.FileField(upload_to='./upload/')
+    desc = models.TextField()
+
+    def __str__(self):
+        return self.name
