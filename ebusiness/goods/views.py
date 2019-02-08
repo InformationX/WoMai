@@ -1,3 +1,4 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, render_to_response
 
 from goods.forms import UserForm, LoginForm
@@ -35,6 +36,32 @@ def register(request):
         uf = UserForm()
     return render_to_response('register.html', {'uf':uf})
 
+# 显示首页
 def index(request):
     uf = LoginForm()
     return render_to_response('index.html', {'uf':uf})
+
+# 用户登录
+def login_action(request):
+    if request.method == 'POST':
+        uf = LoginForm(request.POST)
+        if uf.is_valid():
+            # 寻找名为username和password的POST参数,而且如果参数没有提交,就返回一个空的字符串
+            username = (request.POST.get('username')).strip()
+            password = (request.POST.get('password')).strip()
+            # 判断输入数据是否为空
+            if username == '' or password =='':
+                return render_to_response(request, "index.html", {'uf':uf, "error":"用户名和密码不能为空！"})
+            else:
+                # 判断用户名和密码是否正确
+                user = User.objects.filter(username=username, password=password)
+                if user:
+                    response = HttpResponseRedirect('/goods_view/')
+                    # 登录成功后跳转查看商品信息
+                    request.session['username'] = username  # 将session信息写到服务器
+                    return response
+                else:
+                    return render(request, "index.html", {'uf':uf, "error":'用户名或者密码错误！'})
+        else:
+            uf = LoginForm()
+        return render_to_response('index.html', {'uf':uf})
