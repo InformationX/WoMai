@@ -26,7 +26,7 @@ def register(request):
                 user = User()
                 user.username = username
                 user.password = password
-                username.email = email
+                user.email = email
                 user.save()
                 # 返回登录页面
                 uf = LoginForm()

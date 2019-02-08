@@ -24,7 +24,7 @@
     <div class="container">
       <form class="form-signin" method="post" enctype="multipart/form-data">
         <h2 class="form-signin-heading">电子商务系统-注册</h2>
-		{% csrf_token %}
+		<!--{% csrf_token %}-->
         {{uf.as_p}}
           <p style="color:red">{{error}}</p> <br>
         <button class="btn btn-lg btn-primary btn-block" type="submit">注册</button><br>
