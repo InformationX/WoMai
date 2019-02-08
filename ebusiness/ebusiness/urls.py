@@ -13,9 +13,17 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import os
+
+from django.conf.urls import static
 from django.contrib import admin
 from django.urls import path
 
+from ebusiness.settings import BASE_DIR
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    # 图片保存
+    path(r'^static/(?P<path>.*)', static.serve, {'document_root':os.path.join(BASE_DIR, 'upload')})
 ]
