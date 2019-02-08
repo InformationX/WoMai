@@ -34,3 +34,7 @@ def register(request):
     else:   # 如果不是表单提交状态, 就显示表单信息
         uf = UserForm()
     return render_to_response('register.html', {'uf':uf})
+
+def index(request):
+    uf = LoginForm()
+    return render_to_response('index.html', {'uf':uf})

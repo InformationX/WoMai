@@ -28,7 +28,7 @@ urlpatterns = [
     # 图片保存
     url(r'^static/(?P<path>.*)', static.serve, {'document_root':os.path.join(BASE_DIR, 'upload')}),
     # 用户注册
-    url(r'^register/$', views.register)
+    url(r'^register/$', views.register),
     # 主页
     url(r'^$', views.index),
 
