@@ -1,11 +1,13 @@
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, render_to_response
+from django.shortcuts import render, render_to_response, get_object_or_404
 
 from goods.forms import UserForm, LoginForm
 
 # Create your views here.
 # 用户注册
-from goods.models import User
+from goods.models import User, Address, Goods
+from goods.util import Util
 
 
 def register(request):
@@ -65,3 +67,20 @@ def login_action(request):
         else:
             uf = LoginForm()
         return render_to_response('index.html', {'uf':uf})
+
+def user_info(request):
+    # 检查用户是否登录
+    util = Util()
+    username = util.check_user(request)
+    # 如果没有登录,就跳转到首页
+    if username == "":
+        uf = LoginForm()
+        return render(request, "index.html", {'uf':uf, "error":"请登录后再进入！"})
+    else:
+        # cont为当前购物车商品的数量
+        count = util.cookies_count(request)
+        # 获取登录用户信息
+        user_list = get_object_or_404(User, username=username)
+        # 获取登录用户收货地址的所有信息
+        address_list = Address.objects.filter(user_id=user_list.id)
+        return render(request, 'view_user.html', {"user":username,"user_info":user_list, "address":address_list, "count":count})

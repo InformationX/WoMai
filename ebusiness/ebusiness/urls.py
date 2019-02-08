@@ -32,6 +32,11 @@ urlpatterns = [
     # 主页
     url(r'^$', views.index),
     url(r'^index/$', views.index),
-    url(r'^login_action/$', views.login_action)
+    url(r'^login_action/$', views.login_action),
+
+    # 用户信息显示
+    url(r'^user_info/$', views.user_info),
+
+    # url(r'^goods_view/$', views.goods_view),
 
 ]
