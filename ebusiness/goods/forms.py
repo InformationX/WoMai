@@ -9,3 +9,7 @@ class UserForm(forms.Form):
 class LoginForm(forms.Form):
     username = forms.CharField(label='用户名', max_length=100)
     password = forms.CharField(label='密码', widget=forms.PasswordInput())
+
+class AddressForm(forms.Form):
+    address = forms.CharField(label='地址', max_length=100)
+    phone = forms.CharField(label='电话', max_length=15)

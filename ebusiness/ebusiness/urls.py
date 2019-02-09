@@ -58,3 +58,4 @@ urlpatterns = [
     url(r'^add_address/(?P<sign>[0-9]+)/$', views.add_address),
     url(r'^view_address/$', views.view_address)
 ]
+

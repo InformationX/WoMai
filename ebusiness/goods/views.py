@@ -2,7 +2,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, render_to_response, get_object_or_404
 
-from goods.forms import UserForm, LoginForm
+from goods.forms import UserForm, LoginForm, AddressForm
 
 # Create your views here.
 # 用户注册
@@ -333,11 +333,54 @@ def view_address(request):
         address_list = Address.objects.filter(user_id=user_list.id)
         return render(request, 'view_address.html', {"user":username, 'address':address_list})
 
-def add_address(request, sign):
+def add_address(request,sign):
     '''
     添加收货地址
     :param request:
     :param sign:
     :return:
     '''
-    pass
+    util = Util()
+    username = util.check_user(request)
+    if username=="":
+        uf1 = LoginForm()
+        return render(request,"index.html",{'uf':uf1,"error":"请登录后再进入"})
+    else:
+        #获得当前登录用户的所有信息
+        user_list = get_object_or_404(User, username=username)
+        #获得当前登录用户的编号
+        id = user_list.id
+        #判断表单是否提交
+        if request.method == "POST":
+            #如果表单提交，准备获取表单信息
+            uf = AddressForm(request.POST)
+            #表单信息是否正确
+            if uf.is_valid():
+                #如果正确，开始获取表单信息
+                myaddress = (request.POST.get("address", "")).strip()
+                phone = (request.POST.get("phone", "")).strip()
+                #判断地址是否存在
+                check_address = Address.objects.filter(address=myaddress,user_id = id)
+                if not check_address:
+                    #如果不存在，将表单写入数据库
+                    address = Address()
+                    address.address = myaddress
+                    address.phone = phone
+                    address.user_id = id
+                    address.save()
+                    #返回地址列表页面
+                    address_list = Address.objects.filter(user_id=user_list.id)
+                    #如果sign=="2"，返回订单信息
+                    if sign=="2":
+                        return render(request, 'view_address.html', {"user": username,'addresses': address_list}) #进入订单用户信息
+                    else:
+                    #否则返回用户信息
+                        response = HttpResponseRedirect('/user_info/') # 进入用户信息
+                        return response
+                #否则返回添加用户界面，显示“这个地址已经存在！”的错误信息
+                else:
+                    return render(request,'add_address.html',{'uf':uf,'error':'这个地址已经存在！'})
+        #如果没有提交，显示添加地址见面
+        else:
+            uf = AddressForm()
+        return render(request,'add_address.html',{'uf':uf})
