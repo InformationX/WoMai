@@ -197,4 +197,4 @@ def view_goods(request, good_id):
     else:
         count = util.cookies_count(request)
         good = get_object_or_404(Goods, id=good_id)
-        return render(request, 'good_detail.html', {'user':username, 'good':good, 'count':count})
+        return render(request, 'good_details.html', {'user':username, 'good':good, 'count':count})
