@@ -39,5 +39,7 @@ urlpatterns = [
     url(r'^change_password/$', views.change_password),
     # 商品信息显示
     url(r'^goods_view/$', views.goods_view),
+    # 商品信息的模糊查询
+    url(r'^search_name/$', views.search_name),
 
 ]

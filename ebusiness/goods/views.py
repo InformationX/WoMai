@@ -152,3 +152,33 @@ def goods_view(request):
             contacts = paginator.page(1)
         return render(request, "goods_view.html", {"user":username, "goodss":contacts, "count":count})
 
+def search_name(request):
+    '''
+    商品搜索
+    :param request:
+    :return:
+    '''
+    util = Util()
+    username = util.check_user(request)
+    if username == "":
+        uf = LoginForm()
+        return render(request, "index.html", {'uf':uf, "error":"请登录后再进入！"})
+    else:
+        count = util.cookies_count(request)
+        # 获取查询数据
+        search_name = (request.POST.get("good", "")).strip()
+        # 通过objects.filter()方法进行模糊匹配查询, 查询结果放入变量good_list
+        good_list = Goods.objects.filter(name__icontains=search_name)
+
+        # 对查询结果进行分页显示
+        paginator = Paginator(good_list, 5)
+        page = request.GET.get('page')
+        try:
+            contacts = paginator.page(page)
+        except PageNotAnInteger:
+            # 如果页号不是一个整数, 就返回第一页
+            contacts = paginator.page(1)
+        except EmptyPage:
+            # 如果页号查出范围(如9999), 就返回结果的最后一页
+            contacts = paginator.page(paginator.num_pages)
+        return render(request, "goods_view.html", {"user":username, "goodss":contacts, "count":count})
