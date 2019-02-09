@@ -312,3 +312,32 @@ def remove_chart_all(request):
         for key in cookie_list:
             response.set_cookie(str(key), 1, 0)
         return response
+
+
+# 收货地址部分
+def view_address(request):
+    '''
+    显示收货地址
+    :param request:
+    :return:
+    '''
+    util = Util()
+    username = util.check_user(request)
+    if username == "":
+        uf = LoginForm()
+        return render(request, "index.html", {'uf': uf, 'error': '请登录后再操作！'})
+    else:
+        # 返回用户信息
+        user_list = get_object_or_404(User, username=username)
+        # 返回这个用户的地址信息
+        address_list = Address.objects.filter(user_id=user_list.id)
+        return render(request, 'view_address.html', {"user":username, 'address':address_list})
+
+def add_address(request, sign):
+    '''
+    添加收货地址
+    :param request:
+    :param sign:
+    :return:
+    '''
+    pass

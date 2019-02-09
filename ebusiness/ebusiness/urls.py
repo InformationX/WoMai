@@ -53,4 +53,8 @@ urlpatterns = [
     url(r'^remove_chart/(?P<good_id>[0-9]+)/$', views.remove_chart),
     # 删除购物车内所有的商品
     url(r'^remove_chart_all/$', views.remove_chart_all),
+
+    # 送货地址的添加与显示
+    url(r'^add_address/(?P<sign>[0-9]+)/$', views.add_address),
+    url(r'^view_address/$', views.view_address)
 ]
