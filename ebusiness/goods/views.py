@@ -292,3 +292,23 @@ def remove_chart(request, good_id):
         # 移除购物车
         response.set_cookie(str(good_id), 1, 0)
         return response
+
+def remove_chart_all(request):
+    '''
+    删除购物车中所有的商品
+    :param request:
+    :return:
+    '''
+    util = Util()
+    username = util.check_user(request)
+    if username == "":
+        uf = LoginForm()
+        return render(request, "index.html", {'uf': uf, 'error': '请登录后再操作！'})
+    else:
+        response = HttpResponseRedirect('/view_chart/')
+        # 获取购物车中的所有商品
+        cookie_list = util.deal_cookes(request)
+        # 遍历购物车中的商品, 一个一个地删除
+        for key in cookie_list:
+            response.set_cookie(str(key), 1, 0)
+        return response

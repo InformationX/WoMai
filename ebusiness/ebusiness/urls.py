@@ -50,6 +50,7 @@ urlpatterns = [
     # 修改购物车中的商品数量
     url(r'^update_chart/(?P<good_id>[0-9]+)/$', views.update_chart),
     # 删除购物车中的某种商品
-    url(r'^remove_chart/(?P<good_id>[0-9]+)/$', views.remove_chart)
-
+    url(r'^remove_chart/(?P<good_id>[0-9]+)/$', views.remove_chart),
+    # 删除购物车内所有的商品
+    url(r'^remove_chart_all/$', views.remove_chart_all),
 ]
