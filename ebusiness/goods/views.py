@@ -272,3 +272,23 @@ def update_chart(request, good_id):
             response = HttpResponseRedirect('/view_chart/')
             response.set_cookie(str(good_id), count, 60 * 60 * 24 * 365)
             return response
+
+def remove_chart(request, good_id):
+    '''
+    把购物车中的商品移除购物车
+    :param request:
+    :param good_id:
+    :return:
+    '''
+    util = Util()
+    username = util.check_user(request)
+    if username == "":
+        uf = LoginForm()
+        return render(request, "index.html", {'uf':uf, 'error':'请登录后再操作！'})
+    else:
+        # 获取指定id的商品
+        good = get_object_or_404(Goods, id=good_id)
+        response = HttpResponseRedirect('/view_chart/')
+        # 移除购物车
+        response.set_cookie(str(good_id), 1, 0)
+        return response

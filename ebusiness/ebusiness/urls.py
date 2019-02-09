@@ -49,5 +49,7 @@ urlpatterns = [
     url(r'^view_chart/$', views.view_chart),
     # 修改购物车中的商品数量
     url(r'^update_chart/(?P<good_id>[0-9]+)/$', views.update_chart),
+    # 删除购物车中的某种商品
+    url(r'^remove_chart/(?P<good_id>[0-9]+)/$', views.remove_chart)
 
 ]
