@@ -198,3 +198,30 @@ def view_goods(request, good_id):
         count = util.cookies_count(request)
         good = get_object_or_404(Goods, id=good_id)
         return render(request, 'good_details.html', {'user':username, 'good':good, 'count':count})
+
+# 购物车部分
+def add_chart(request, good_id, sign):
+    '''
+    加入购物车
+    :param request:
+    :param good_id:
+    :param sign:
+    :return:
+    '''
+    util = Util()
+    username = util.check_user(request)
+    if username == "":
+        uf = LoginForm()
+        return render(request, "index.html", {'error':"请登录后再进入！"})
+    else:
+        # 获得商品详情
+        good = get_object_or_404(Goods, id=good_id)
+        # 如果sign==1, 则返回商品列表页面
+        if sign == "1":
+            response = HttpResponseRedirect('/goods_view/')
+        # 否则返回商品详情页面
+        else:
+            response = HttpResponseRedirect('/view_goods/' + good_id)
+        # 把当前商品添加进购物车, 参数为商品id, 值为购买商品的数量, 默认为1, 有效时间是一年
+        response.set_cookie(str(good.id), 1, 60 * 60 * 24 * 365)
+        return response

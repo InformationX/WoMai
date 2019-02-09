@@ -43,5 +43,7 @@ urlpatterns = [
     url(r'^search_name/$', views.search_name),
     # 查看商品详情
     url(r'^view_goods/(?P<good_id>[0-9]+)/$', views.view_goods),
+    # 添加购物车
+    url(r'^add_chart/(?P<good_id>[0-9]+)/(?P<sign>[0-9]+)/$', views.add_chart)
 
 ]
