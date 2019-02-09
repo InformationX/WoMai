@@ -243,3 +243,32 @@ def view_chart(request):
         # 返回所有的cookie内容
         my_chart_list = util.add_chart(request)
         return render(request, "view_chart.html", {"user":username, "goodss":my_chart_list, "count":count})
+
+def update_chart(request, good_id):
+    '''
+    修改购物车中的商品数量
+    :param request:
+    :param good_id:
+    :return:
+    '''
+    util = Util()
+    username = util.check_user(request)
+    if username == "":
+        uf = LoginForm()
+        return render(request, "index.html", {'uf':uf, 'error':'请登录后再进入！'})
+    else:
+        # 获取编号为good_id的商品
+        good = get_object_or_404(Goods, id=good_id)
+        # 获取修改的数量
+        count = (request.POST.get("count" + good_id, "")).strip()
+        # 如果数量值<=0, 就报出错信息
+        if int(count) <= 0 :
+            # 获得购物车列表信息
+            my_chart_list = util.add_chart(request)
+            # 返回错误信息
+            return render(request, "view_chart.html", {'user':username, 'goodss':my_chart_list, 'error':'个数不能少于或等于0！'})
+        else:
+            # 否则修改商品数量
+            response = HttpResponseRedirect('/view_chart/')
+            response.set_cookie(str(good_id), count, 60 * 60 * 24 * 365)
+            return response

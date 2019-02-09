@@ -46,6 +46,8 @@ urlpatterns = [
     # 添加购物车
     url(r'^add_chart/(?P<good_id>[0-9]+)/(?P<sign>[0-9]+)/$', views.add_chart),
     # 查看购物车中的商品
-    url(r'^view_chart/$', views.view_chart)
+    url(r'^view_chart/$', views.view_chart),
+    # 修改购物车中的商品数量
+    url(r'^update_chart/(?P<good_id>[0-9]+)/$', views.update_chart),
 
 ]
