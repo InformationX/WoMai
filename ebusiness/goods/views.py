@@ -225,3 +225,21 @@ def add_chart(request, good_id, sign):
         # 把当前商品添加进购物车, 参数为商品id, 值为购买商品的数量, 默认为1, 有效时间是一年
         response.set_cookie(str(good.id), 1, 60 * 60 * 24 * 365)
         return response
+
+def view_chart(request):
+    '''
+    查看购物车中的商品
+    :param request:
+    :return:
+    '''
+    util = Util()
+    username = util.check_user(request)
+    if username == "":
+        uf = LoginForm()
+        return render(request, "index.html", {'uf':uf, 'error':'请登录后再进入！'})
+    else:
+        # 购物车中的商品个数
+        count = util.cookies_count(request)
+        # 返回所有的cookie内容
+        my_chart_list = util.add_chart(request)
+        return render(request, "view_chart.html", {"user":username, "goodss":my_chart_list, "count":count})
