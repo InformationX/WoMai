@@ -13,14 +13,13 @@ class User(models.Model):
 
 # 商品
 class Goods(models.Model):
-    name = models.CharField(max_length=100)
-    price = models.FloatField()
-    picture = models.FileField(upload_to='./upload/')
-    desc = models.TextField()
+    name = models.CharField(max_length=100)     # 商品名称
+    price = models.FloatField()         # 单价
+    picture = models.FileField(upload_to='./upload/')   # 图片
+    desc = models.TextField()   # 描述
 
     def __str__(self):
         return self.name
-
 
 # 收货地址
 class Address(models.Model):
