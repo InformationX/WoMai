@@ -41,5 +41,7 @@ urlpatterns = [
     url(r'^goods_view/$', views.goods_view),
     # 商品信息的模糊查询
     url(r'^search_name/$', views.search_name),
+    # 查看商品详情
+    url(r'^view_goods/(?P<good_id>[0-9]+)/$', views.view_goods),
 
 ]

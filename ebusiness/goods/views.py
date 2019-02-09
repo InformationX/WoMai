@@ -182,3 +182,19 @@ def search_name(request):
             # 如果页号查出范围(如9999), 就返回结果的最后一页
             contacts = paginator.page(paginator.num_pages)
         return render(request, "goods_view.html", {"user":username, "goodss":contacts, "count":count})
+
+def view_goods(request, good_id):
+    '''
+    查看商品详情
+    :param request:
+    :return:
+    '''
+    util = Util()
+    username = util.check_user(request)
+    if username == "":
+        uf = LoginForm()
+        return render(request, "index.html", {'uf':uf, "error":"请登录后再进入！"})
+    else:
+        count = util.cookies_count(request)
+        good = get_object_or_404(Goods, id=good_id)
+        return render(request, 'good_detail.html', {'user':username, 'good':good, 'count':count})
