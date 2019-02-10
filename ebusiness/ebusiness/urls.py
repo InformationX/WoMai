@@ -56,6 +56,8 @@ urlpatterns = [
 
     # 送货地址的添加与显示
     url(r'^add_address/(?P<sign>[0-9]+)/$', views.add_address),
-    url(r'^view_address/$', views.view_address)
+    url(r'^view_address/$', views.view_address),
+    # 送货地址的修改
+    url(r'^update_address/(?P<address_id>[0-9]+)/(?P<sign>[0-9]+)/$', views.update_address)
 ]
 

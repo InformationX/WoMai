@@ -1,6 +1,6 @@
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, render_to_response, get_object_or_404
+from django.shortcuts import render, render_to_response, get_object_or_404, redirect
 
 from goods.forms import UserForm, LoginForm, AddressForm
 
@@ -384,3 +384,102 @@ def add_address(request,sign):
         else:
             uf = AddressForm()
         return render(request,'add_address.html',{'uf':uf})
+
+# def update_address(request, address_id, sign):
+#     '''
+#     送货地址的修改
+#     sign=1:表示从用户信息进入添加送货地址页面
+#     sign=2:表示从订单信息进入添加送货地址页面
+#     :param request:
+#     :param address_id:
+#     :param sign:
+#     :return:
+#     '''
+#     util = Util()
+#     username = util.check_user(request)
+#     if username == "":
+#         uf = LoginForm()
+#         return render(request, "index.html", {'uf':uf, 'error':"请登录后再进入！"})
+#     else:
+#         # 获取指定地址信息
+#         address_list = get_object_or_404(Address, id=address_id)
+#         # 获取当前登录用户的用户信息
+#         user_list = get_object_or_404(User, username=username)
+#         # 获取用户id
+#         id = user_list.id
+#         # 如果是提交状态
+#         if request.method == 'POST':
+#             # 如果表单已提交, 就准备获取表单信息
+#             uf = AddressForm(request.POST)
+#             # 表单信息验证
+#             if uf.is_valid():
+#                 # 如果数据准确, 就获取表单信息
+#                 myaddress = (request.POST.get("address", "")).strip()
+#                 phone = (request.POST.get("phone", "")).strip()
+#                 # 判断需要修改地址信息的关联用户是否存在
+#                 check_address = Address.objects.filter(address=myaddress, user_id=id)
+#                 # 如果不存在, 就修改表单数据并存入数据库中
+#                 if not check_address:
+#                     Address.objects.filter(id=address_id,).update(address=myaddress, phone=phone)
+#                 # 否则报"这个地址已经存在!"的错误信息
+#                 else:
+#                     return render(request, 'update_address.html', {'uf':uf, 'error':'这个地址已经存在了！', 'address':address_list})
+#                 # 获取当前登录用户的所有地址信息
+#                 address_list = Address.objects.filter(user_id=user_list.id)
+#                 # 如果sign=2, 则返回订单信息页面
+#                 if sign == '2':
+#                     return render(request, 'view_address.html', {'user':username, 'addresses':address_list})    # 进入订单用户信息页面
+#                 # 否则进入用户信息页面
+#                 else:
+#                     response = HttpResponseRedirect('/user_info/')   # 进入用户信息页面
+#                     return response
+#             # 如果没有提交, 就显示修改地址页面
+#             else:
+#                 return render(request, 'update_address.html', {'address':address_list})
+
+def update_address(request,address_id,sign):
+    util = Util()
+    username = util.check_user(request)
+    if username=="":
+        uf = LoginForm()
+        return render(request,"index.html",{'uf':uf,"error":"请登录后再进入"})
+    else:
+        #判断修改的地址是否属于当前登录用户
+        if not util.check_User_By_Address(request,username,address_id):
+            return render(request,"error.html",{"error":"你试图修改不属于你的地址信息！"})
+        else:
+            #获取指定地址信息
+            address_list = get_object_or_404(Address, id=address_id)
+            #获取当前登录用户的用户信息
+            user_list = get_object_or_404(User, username=username)
+            #获取用户编号
+            id = user_list.id
+            #如果是提交状态
+            if request.method == "POST":
+                #如果表单提交，准备获取表单信息
+                uf = AddressForm(request.POST)
+                #表单信息验证
+                if uf.is_valid():
+                    #如果数据准确，获取表单信息
+                    myaddress = (request.POST.get("address", "")).strip()
+                    phone = (request.POST.get("phone", "")).strip()
+                    #判断修改的地址信息这个用户是否是否存在
+                    check_address = Address.objects.filter(address=myaddress,user_id = id)
+                    #如果不存在，将表单数据修改进数据库
+                    if not check_address:
+                        Address.objects.filter(id=address_id).update(address = myaddress,phone = phone)
+                    #否则报“这个地址已经存在！”的错误提示信息
+                    else:
+                        return render(request,'update_address.html',{'uf':uf,'error':'这个地址已经存在！','address':address_list})
+                    #获得当前登录用户的所有地址信息
+                    address_list = Address.objects.filter(user_id=user_list.id)
+                    #如果sign==2,返回订单信息页面
+                    if sign=="2":
+                        return render(request, 'view_address.html', {"user": username,'addresses': address_list}) #进入订单用户信息
+                    #否则进入用户信息页面
+                    else:
+                        response = HttpResponseRedirect('/user_info/') # 进入用户信息
+                        return response
+            #如果没有提交，显示修改地址页面
+            else:
+                return render(request,'update_address.html',{'address':address_list})
