@@ -6,7 +6,7 @@ from goods.forms import UserForm, LoginForm, AddressForm
 
 # Create your views here.
 # 用户注册
-from goods.models import User, Address, Goods
+from goods.models import User, Address, Goods, Orders, Order
 from goods.util import Util
 
 
@@ -460,3 +460,69 @@ def delete_address(request, address_id, sign):
         else:
             response = HttpResponseRedirect('/user_info/')  # 进入用户信息页面
             return response
+
+# 订单部分
+def create_order(request):
+    '''
+    生成订单信息
+    :return:
+    '''
+    util = Util()
+    username = util.check_user(request)
+    if username == "":
+        uf = LoginForm()
+        return render(request, "index.html", {'uf': uf, 'error': "请登录后再进入！"})
+    else:
+        # 根据登录的用户名获得用户信息
+        user_list = get_object_or_404(User, username=username)
+        # 从选择地址信息中获得建立这个订单的送货地址id
+        address_id = (request.POST.get('address', "")).strip()
+        # 如果没有选择地址, 就返回错误提示信息
+        if address_id == "":
+            address_list = Address.objects.filter(user_id = user_list.id)
+            return render(request, 'view_address.html', {'user':username, 'addresses':address_list, 'error':'必须选择一个地址！'})
+        # 否则开始形成订单
+        # 把数据存入数据库中的总订单表中
+        orders = Orders()
+        # 获得订单的收货地址的id
+        orders.address_id = int(address_id)
+        # 设置订单的状态为未付款
+        orders.status = False
+        # 保存总订单信息
+        orders.save()
+        # 准备把订单中的每个商品存入单个订单表中
+        # 获得总订单id
+        orders_id = orders.id
+        # 获得购物车中的内容
+        cookie_list = util.deal_cookes(request)
+        # 遍历购物车
+        for key in cookie_list:
+            # 构建对象Order()
+            order = Order()
+            # 获得总订单id
+            order.order_id = orders_id
+            # 获得用户id
+            order.goods_id = user_list.id
+            # 获得商品id
+            order.goods_id = key
+            # 获得数量
+            order.count = int(cookie_list[key])
+            # 保存单个订单信息
+            order.save()
+        # 清除所有cookies, 并且显示这个订单
+        response = HttpResponseRedirect('/view_order/' + str(orders_id))
+        for key in cookie_list:
+            response.set_cookie(str(key), 1, 0)
+        return response
+
+
+
+
+def view_order(request, orders_id):
+    '''
+    显示订单
+    :param request:
+    :param orders_id:
+    :return:
+    '''
+    pass

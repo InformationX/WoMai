@@ -61,5 +61,9 @@ urlpatterns = [
     url(r'^update_address/(?P<address_id>[0-9]+)/(?P<sign>[0-9]+)/$', views.update_address),
     # 收货地址的删除
     url(r'^delete_address/(?P<address_id>[0-9]+)/(?P<sign>[0-9]+)/$', views.delete_address),
+
+    # 总订单的生成和显示
+    url(r'^create_order/$', views.create_order),
+    url(r'^view_order/(?P<order_id>[0-9]+)/$', views.view_order),
 ]
 
