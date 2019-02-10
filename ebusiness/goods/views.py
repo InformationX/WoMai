@@ -7,6 +7,7 @@ from goods.forms import UserForm, LoginForm, AddressForm
 # Create your views here.
 # 用户注册
 from goods.models import User, Address, Goods, Orders, Order
+from goods.object import Order_list
 from goods.util import Util
 
 
@@ -502,7 +503,7 @@ def create_order(request):
             # 获得总订单id
             order.order_id = orders_id
             # 获得用户id
-            order.goods_id = user_list.id
+            order.user_id = user_list.id
             # 获得商品id
             order.goods_id = key
             # 获得数量
@@ -525,4 +526,30 @@ def view_order(request, orders_id):
     :param orders_id:
     :return:
     '''
-    pass
+    util = Util()
+    username = util.check_user(request)
+    if username == "":
+        uf = LoginForm()
+        return render(request, "index.html", {'uf': uf, 'error': "请登录后再进入！"})
+    else:
+        # 获取总订单信息
+        orders_filter = get_object_or_404(Orders, id=orders_id)
+        # 获取订单的收货地址信息
+        address_list = get_object_or_404(Address, id=orders_filter.address_id)
+        # 获取收货地址信息中的地址
+        address = address_list.address
+        # 获取单个订单表中的信息
+        order_filter = Order.objects.filter(order_id=orders_filter.id)
+        # 建立列表变量order_list, 里面存放的是每个Order_list对象
+        order_list_var = []
+        prices = 0
+        for key in order_filter:
+            # 定义Order_list对象
+            order_object = Order_list
+            # 产生一个Order_list对象
+            order_object = util.set_order_list(key)
+            # 把当前Order_list对象加入到列表变量order_list
+            order_list_var.append(order_object)
+            # 获取当前商品的总价格
+            prices = order_object.price * order_object.count + prices
+        return render(request, 'view_order.html', {'user':username, 'orders':orders_filter, 'order':order_list_var, 'address':address, 'prices':str(prices)})

@@ -64,6 +64,6 @@ urlpatterns = [
 
     # 总订单的生成和显示
     url(r'^create_order/$', views.create_order),
-    url(r'^view_order/(?P<order_id>[0-9]+)/$', views.view_order),
+    url(r'^view_order/(?P<orders_id>[0-9]+)/$', views.view_order),
 ]
 
