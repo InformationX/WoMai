@@ -44,6 +44,16 @@ def index(request):
     uf = LoginForm()
     return render_to_response('index.html', {'uf':uf})
 
+def logout(request):
+    '''
+    用户登出
+    :param request:
+    :return:
+    '''
+    response = HttpResponseRedirect('/index/')
+    del request.session['username']
+    return response
+
 # 用户登录
 def login_action(request):
     if request.method == 'POST':

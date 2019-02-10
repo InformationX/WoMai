@@ -33,6 +33,8 @@ urlpatterns = [
     url(r'^$', views.index),
     url(r'^index/$', views.index),
     url(r'^login_action/$', views.login_action),
+    # 用户登出
+    url(r'^logout/$', views.logout),
     # 用户信息显示
     url(r'^user_info/$', views.user_info),
     # 修改用户密码
