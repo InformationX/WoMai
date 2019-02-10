@@ -7,7 +7,7 @@ from goods.forms import UserForm, LoginForm, AddressForm
 # Create your views here.
 # 用户注册
 from goods.models import User, Address, Goods, Orders, Order
-from goods.object import Order_list
+from goods.object import Order_list, Orders_list
 from goods.util import Util
 
 
@@ -69,8 +69,8 @@ def login_action(request):
                 # 判断用户名和密码是否正确
                 user = User.objects.filter(username=username, password=password)
                 if user:
-                    response = HttpResponseRedirect('/goods_view/')
                     # 登录成功后跳转查看商品信息
+                    response = HttpResponseRedirect('/goods_view/')
                     request.session['username'] = username  # 将session信息写到服务器
                     return response
                 else:
@@ -563,3 +563,51 @@ def view_order(request, orders_id):
             # 获取当前商品的总价格
             prices = order_object.price * order_object.count + prices
         return render(request, 'view_order.html', {'user':username, 'orders':orders_filter, 'order':order_list_var, 'address':address, 'prices':str(prices)})
+
+def view_all_order(request):
+    '''
+    查看所有订单
+    :param request:
+    :return:
+    '''
+    util = Util()
+    username = util.check_user(request)
+    if username == "":
+        uf = LoginForm()
+        return render(request, "index.html", {'uf': uf, 'error': "请登录后再进入！"})
+    else:
+        # 获得所有总订单信息
+        orders_all = Orders.objects.all()
+        # 初始化订单结果列表, 这个列表变量在本段代码最后传递给模板文件
+        Reust_Order_list = []
+        # 遍历总订单
+        for key1 in orders_all:
+            # 通过当前订单id获取这个订单的单个订单详细信息
+            order_all = Order.objects.filter(order_id=key1.id)
+            # 检查这个订单是否属于当前用户
+            user = get_object_or_404(User, id=order_all[0].user_id)
+            # 如果属于当前用户, 就将其放入总订单列表中
+            if user.username == username:
+                # 初始化总订单列表
+                Orders_object_list = []
+                # 初始化总订单类
+                orders_object = Order_list
+                # 产生一个Order_list对象
+                orders_object = util.set_order_list(key1)
+                # 初始化总价格为 0
+                prices = 0
+                # 遍历这个订单
+                for key in order_all:
+                    # 初始化订单类
+                    order_object = Order_list
+                    # 产生一个Order_list对象
+                    order_object = util.set_order_list(key)
+                    # 将产生的order_object类加到总订单列表中
+                    Orders_object_list.append(order_object)
+                    # 计算总价格
+                    prices = order_object.price * key.count + prices
+                # 把总价格放到order_object类中
+                order_object.set_prices(prices)
+                # 把当前记录加到Reust_Order_list列中
+                Reust_Order_list.append({orders_object: Orders_object_list})
+        return render(request, 'view_all_order.html', {"user": username, 'Orders_set': Reust_Order_list})
