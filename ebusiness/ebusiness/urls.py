@@ -58,6 +58,8 @@ urlpatterns = [
     url(r'^add_address/(?P<sign>[0-9]+)/$', views.add_address),
     url(r'^view_address/$', views.view_address),
     # 送货地址的修改
-    url(r'^update_address/(?P<address_id>[0-9]+)/(?P<sign>[0-9]+)/$', views.update_address)
+    url(r'^update_address/(?P<address_id>[0-9]+)/(?P<sign>[0-9]+)/$', views.update_address),
+    # 收货地址的删除
+    url(r'^delete_address/(?P<address_id>[0-9]+)/(?P<sign>[0-9]+)/$', views.delete_address),
 ]
 
