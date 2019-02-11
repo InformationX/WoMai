@@ -18,15 +18,21 @@ import os
 from django.conf.urls import static, url
 from django.contrib import admin
 from django.urls import path
+from django.views.static import serve
 
+from ebusiness import settings
 from ebusiness.settings import BASE_DIR
 from goods import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    # 图片保存
-    url(r'^static/(?P<path>.*)', static.serve, {'document_root':os.path.join(BASE_DIR, 'upload')}),
+    # url(r'^static/(?P<path>.*)$', static.serve, {'document_root': settings.STATIC_ROOT}, name='static'),
+
+    # url(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
+
+    # url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}, name='media'),
+
     # 用户注册
     url(r'^register/$', views.register),
     # 主页
@@ -69,5 +75,12 @@ urlpatterns = [
     url(r'^view_order/(?P<orders_id>[0-9]+)/$', views.view_order),
     # 查看所有订单
     url(r'^view_all_order/$', views.view_all_order),
+    # url(r'^static/(?P.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
 ]
 
+
+
+
+# handler403 = views.permission_denied
+# handler404 = views.page_not_found
+# handler500 = views.page_error

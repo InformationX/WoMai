@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'y+pc&r-*@+=rkhqkghdy7q*+)v1x*e_4(17)w4rp-gc59!#8n1'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
+# DEBUG = True
+DEBUG = False
+ALLOWED_HOSTS = '*'
 
 
 # Application definition
@@ -55,7 +55,9 @@ ROOT_URLCONF = 'ebusiness.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates/'],
+        # 'DIRS': [os.path.join(BASE_DIR, 'apps', 'templates'),],
+        # 'APP_DIRS': False,
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -122,13 +124,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
-# STATIC_URL = '/static/'
-STATIC_URL = '/upload/'
+STATIC_URL = '/static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, '/static/').replace('\\', '/')
 
 STATICFILES_DIRS = (
 	os.path.join(BASE_DIR,"static"),
-    os.path.join(BASE_DIR,"upload"),
 )
 
-
+# 上传图片
+MEDIA_URL = '/media/'
+# 项目根目录下的media文件夹
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media').replace('\\', '/')
 

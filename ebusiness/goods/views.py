@@ -611,3 +611,16 @@ def view_all_order(request):
                 # 把当前记录加到Reust_Order_list列中
                 Reust_Order_list.append({orders_object: Orders_object_list})
         return render(request, 'view_all_order.html', {"user": username, 'Orders_set': Reust_Order_list})
+
+
+# 自定义的错误页面
+def page_not_found(request):
+    return render(request, '404.html')
+
+
+def page_error(request):
+    return render(request, '500.html')
+
+
+def permission_denied(request):
+    return render(request, '403.html')
